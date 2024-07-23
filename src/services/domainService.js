@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import logger from '../utils/logger.js';
 import AppError from '../utils/AppError.js';
 import { isValidDomain, stripDomain } from '../utils/validators.js';
+import { getBookings, saveBookings } from '../utils/fileStore.js';
 
 const BOOKINGS_FILE = path.join(process.cwd(), 'data', 'bookings.json');
 
@@ -40,7 +41,7 @@ export class DomainService {
 
             const stripped_domain = stripDomain(domain);
 
-            const bookings = await this.getBookings();
+            const bookings = await getBookings();
 
             if (bookings.some(booking => booking.domain === stripped_domain && booking.status !== 'cancelled')) {
                 logger.error('Domain is already booked: ' + domain);
@@ -58,33 +59,12 @@ export class DomainService {
             };
 
             bookings.push(newBooking);
-            await this.saveBookings(bookings);
+            await saveBookings(bookings);
 
             logger.info(`Domain booked: ${domain} for ${email}`);
             return newBooking;
         } catch (error) {
             logger.error('Error booking domain:', error);
-            throw error;
-        }
-    }
-
-    static async updateBookingStatus(id, status) {
-        try {
-            const bookings = await this.getBookings();
-            const bookingIndex = bookings.findIndex(booking => booking.id === id);
-
-            if (bookingIndex === -1) {
-                throw new AppError('Booking not found', 404);
-            }
-
-            bookings[bookingIndex].status = status;
-            bookings[bookingIndex].updatedAt = new Date().toISOString();
-            await this.saveBookings(bookings);
-
-            logger.info(`Booking status updated: ${id} to ${status}`);
-            return bookings[bookingIndex];
-        } catch (error) {
-            logger.error('Error updating booking status:', error);
             throw error;
         }
     }

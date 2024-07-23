@@ -16,8 +16,10 @@ export const checkOutOrder = asyncHandler(async (req, res) => {
         }
 
         logger.info(`PaymentController: Initializing payment for ${email} with amount ${amount}`);
-        const result = await PaymentService.initializeTransaction(transaction_id, amount, email);
-        res.json(result);
+        const result = await PaymentService.checkOutOrder(transaction_id, amount, email);
+        res.status(201).json({
+            booking: result
+        });
 
     } catch (error) {
         logger.error('Error initializing payment:', error);

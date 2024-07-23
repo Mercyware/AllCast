@@ -48,16 +48,3 @@ export const bookDomain = asyncHandler(async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 });
-
-export const updateBookingStatus = asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    const { status } = req.body;
-
-    if (!status) {
-        logger.error('Status is required');
-        throw new AppError('Status is required', 400);
-    }
-
-    const updatedBooking = await DomainService.updateBookingStatus(id, status);
-    res.json(updatedBooking);
-});
