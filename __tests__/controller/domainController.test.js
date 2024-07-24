@@ -28,7 +28,7 @@ describe('domainController', () => {
             await checkAvailability(req, res);
 
             expect(res.status).toHaveBeenCalledWith(400);
-            expect(res.json).toHaveBeenCalledWith({ error: 'Domain is required' });
+            expect(res.json).toHaveBeenCalledWith({ error: 'Domain query parameter is required.' });
         });
 
         it('should return 200 with result if domain is available', async () => {
