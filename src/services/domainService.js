@@ -78,7 +78,7 @@ export class DomainService {
             }
 
             const isAvailable = await this.isDomainAvailable(domain);
-            return { domain, available: isAvailable };
+            return { domain, available: isAvailable, price: 20000, currency: "NGN" };
         } catch (error) {
             logger.error('Error checking domain availability:', error);
             throw error;
