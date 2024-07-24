@@ -27,7 +27,6 @@ export class DomainService {
     }
 
     static async bookDomain(domain, email) {
-
         try {
             if (!domain || !isValidDomain(domain)) {
                 logger.error('Invalid domain: ' + domain);
@@ -40,14 +39,22 @@ export class DomainService {
             }
 
             const stripped_domain = stripDomain(domain);
-
             const bookings = await getBookings();
 
+            // Check if the domain is already booked and pending
+            const existingBooking = bookings.find(booking => booking.domain === stripped_domain && booking.status === 'pending');
+            if (existingBooking) {
+                logger.info('Domain already booked and pending: ' + domain);
+                return existingBooking;
+            }
+
+            // Check if the domain is booked (not cancelled)
             if (bookings.some(booking => booking.domain === stripped_domain && booking.status !== 'cancelled')) {
                 logger.error('Domain is already booked: ' + domain);
                 throw new AppError('Domain is already booked', 400);
             }
 
+            // Create a new booking
             const newBooking = {
                 id: uuidv4(),
                 domain: stripped_domain,
@@ -68,6 +75,7 @@ export class DomainService {
             throw error;
         }
     }
+
 
     static async checkAvailability(domain) {
         logger.info(`Checking availability of domain ${domain}`);
