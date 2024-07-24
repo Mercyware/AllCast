@@ -1,4 +1,4 @@
-// src/controllers/domainBookingController.js
+// src/controllers/domainController.js
 
 import { DomainService } from '../services/domainService.js';
 import AppError from '../utils/AppError.js';
@@ -8,11 +8,11 @@ import logger from '../utils/logger.js';
 export const checkAvailability = async (req, res) => {
     const { domain } = req.body;
 
-    logger.info(`ValidationController: Input received to validate domain ${domain}`);
+    logger.info(`domainController: Input received to validate domain ${domain}`);
 
     try {
         if (!domain) {
-            logger.error('ValidationController: Domain  is required');
+            logger.error('domainController: Domain  is required');
             return res.status(400).json({ error: 'Domain is required' });
         }
 
@@ -30,7 +30,7 @@ export const checkAvailability = async (req, res) => {
 
 export const bookDomain = asyncHandler(async (req, res) => {
     const { domain, email } = req.body;
-    logger.info(`ValidationController: Input received to validate domain ${domain} for ${email}`);
+    logger.info(`domainController: Input received to validate domain ${domain} for ${email}`);
 
     try {
         if (!domain || !email) {
