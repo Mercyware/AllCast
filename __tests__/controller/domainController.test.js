@@ -24,6 +24,7 @@ describe('domainController', () => {
 
     describe('checkAvailability', () => {
         it('should return 400 if domain is not provided', async () => {
+            req.query = { domain: '' };
             await checkAvailability(req, res);
 
             expect(res.status).toHaveBeenCalledWith(400);
@@ -31,7 +32,7 @@ describe('domainController', () => {
         });
 
         it('should return 200 with result if domain is available', async () => {
-            req.body.domain = 'example.com';
+            req.query = { domain: 'example.com' };
             const mockResult = { available: true };
             DomainService.checkAvailability.mockResolvedValue(mockResult);
 
@@ -45,7 +46,7 @@ describe('domainController', () => {
         });
 
         it('should return 400 if an error occurs', async () => {
-            req.body.domain = 'example.com';
+            req.query = { domain: 'example.com' };
             const errorMessage = 'Domain check failed';
             DomainService.checkAvailability.mockRejectedValue(new Error(errorMessage));
 

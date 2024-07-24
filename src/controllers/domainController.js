@@ -6,7 +6,14 @@ import asyncHandler from 'express-async-handler';
 import logger from '../utils/logger.js';
 
 export const checkAvailability = async (req, res) => {
-    const { domain } = req.body;
+    //get domain from query parameter
+    const query = req.query;
+    const domain = query.domain;
+
+    if (!domain) {
+        // If 'domain' is not provided, return an error response
+        return res.status(400).json({ error: 'Domain query parameter is required.' });
+    }
 
     logger.info(`domainController: Input received to validate domain ${domain}`);
 
